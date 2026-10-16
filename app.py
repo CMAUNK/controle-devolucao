@@ -335,7 +335,7 @@ if st.button("Ler manifestos", type="primary", disabled=not uploads):
     receiving_rows: list[dict[str, Any]] = []
     shipping_rows: list[dict[str, Any]] = []
     messages: list[str] = []
-    aliases = mapping_aliases(mapping_editor.to_dict(orient="records"))
+    aliases = mapping_aliases(mapping_editor.to_dict(orient="records") if hasattr(mapping_editor, "to_dict") else mapping_editor)
     summaries: list[dict[str, Any]] = []
     for pdf_file in uploads:
         try:
