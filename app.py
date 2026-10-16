@@ -291,10 +291,10 @@ def build_xlsx(receiving: list[dict[str, Any]], shipping: list[dict[str, Any]]) 
     return stream.getvalue()
 
 
-def dataframe_tsv(rows: list[dict[str, Any]], headers: list[str]) -> bytes:
+def dataframe_tsv(rows: list[dict[str, Any]], headers: list[str], include_header: bool = True) -> bytes:
     stream = io.StringIO(newline="")
     writer = csv.writer(stream, delimiter="\t", lineterminator="\n")
-    writer.writerow(headers)
+    if include_header: writer.writerow(headers)
     for row in rows:
         writer.writerow(['=SE(INDIRETO("RC[-5]";FALSO)="";"";SE(HOJE()-INDIRETO("RC[-5]";FALSO)>=6;"D5+";"D"&MÁXIMO(0;HOJE()-INDIRETO("RC[-5]";FALSO))))' if header == "AGING" and "CTE'S FALTANTE" in headers else row.get(header, "") for header in headers])
     return stream.getvalue().encode("utf-8-sig")
@@ -387,7 +387,7 @@ if "manifest_summaries" in st.session_state:
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             type="primary",
         )
-        left, right = st.columns(2); st.caption("Para copiar, use o ícone no canto superior de cada bloco."); left.code(dataframe_tsv(receiving_rows, RECEIVING_HEADERS).decode("utf-8-sig"), language=None); right.code(dataframe_tsv(shipping_rows, SHIPPING_HEADERS).decode("utf-8-sig"), language=None)
+        left, right = st.columns(2); left.caption("Colunas: " + " | ".join(RECEIVING_HEADERS)); right.caption("Colunas: " + " | ".join(SHIPPING_HEADERS)); left.code(dataframe_tsv(receiving_rows, RECEIVING_HEADERS, include_header=False).decode("utf-8-sig"), language=None); right.code(dataframe_tsv(shipping_rows, SHIPPING_HEADERS, include_header=False).decode("utf-8-sig"), language=None)
         with left:
             st.download_button(
                 "Baixar arquivo RECEBENDO (.tsv)",
