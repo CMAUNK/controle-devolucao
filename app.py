@@ -91,7 +91,7 @@ def party_blocks(page: pdfplumber.page.Page) -> tuple[str, str]:
     header_y = None
     table_y = None
     for y, words in lines:
-        line = normalize(" ".join(w["text"] for w in words))
+        line = normalize(clean_duplicated_line(" ".join(w["text"] for w in words)))
         if header_y is None and "EMITENTE" in line and "DESTINATARIO" in line:
             header_y = y
         if header_y is not None and y > header_y and "REMESSA" in line:
@@ -100,7 +100,7 @@ def party_blocks(page: pdfplumber.page.Page) -> tuple[str, str]:
     if header_y is None:
         # Some PDF text layers place the two labels in separate y-groups.
         for y, words in lines:
-            line = normalize(" ".join(w["text"] for w in words))
+            line = normalize(clean_duplicated_line(" ".join(w["text"] for w in words)))
             if "EMITENTE" in line:
                 header_y = y
                 break
