@@ -272,7 +272,7 @@ def build_xlsx(receiving: list[dict[str, Any]], shipping: list[dict[str, Any]]) 
         sheet = workbook.create_sheet(title)
         sheet.append(headers)
         for row in rows:
-            sheet.append([row.get(header, "") for header in headers])
+            sheet.append([f'=IF(F{sheet.max_row + 1}="","",IF(TODAY()-F{sheet.max_row + 1}>=6,"D5+","D"&MAX(0,TODAY()-F{sheet.max_row + 1})))' if title == "BASE-RECEBENDO" and header == "AGING" else row.get(header, "") for header in headers])
         sheet.freeze_panes = "A2"
         sheet.auto_filter.ref = sheet.dimensions
         for cell in sheet[1]:
@@ -296,7 +296,7 @@ def dataframe_tsv(rows: list[dict[str, Any]], headers: list[str]) -> bytes:
     writer = csv.writer(stream, delimiter="\t", lineterminator="\n")
     writer.writerow(headers)
     for row in rows:
-        writer.writerow([row.get(header, "") for header in headers])
+        writer.writerow(['=SE(INDIRETO("RC[-5]";FALSO)="";"";SE(HOJE()-INDIRETO("RC[-5]";FALSO)>=6;"D5+";"D"&MÁXIMO(0;HOJE()-INDIRETO("RC[-5]";FALSO))))' if header == "AGING" and "CTE'S FALTANTE" in headers else row.get(header, "") for header in headers])
     return stream.getvalue().encode("utf-8-sig")
 
 
