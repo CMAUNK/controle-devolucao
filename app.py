@@ -307,7 +307,7 @@ st.write(
     "as páginas de um mesmo PDF serão reunidas em uma única linha."
 )
 
-st.info(
+if False: st.info(
     "Manifesto com Rua Comandante Vergueiro da Cruz em DESTINO → BASE-RECEBENDO. "
     "Em ORIGEM → BASE-EXPEDINDO. O CT-e é o primeiro número de 14 dígitos da coluna REMESSA."
 )
@@ -376,10 +376,10 @@ if "manifest_summaries" in st.session_state:
         shipping_rows = st.session_state["manifest_shipping"]
         if receiving_rows:
             st.subheader("Linhas para BASE-RECEBENDO")
-            st.dataframe(receiving_rows, width="stretch", hide_index=True)
+            receiving_rows = st.data_editor(receiving_rows, num_rows="dynamic", width="stretch", hide_index=True, key=f"receiving_results_editor_{hash(str(summaries))}"); receiving_rows = receiving_rows.to_dict(orient="records") if hasattr(receiving_rows, "to_dict") else receiving_rows; st.session_state["manifest_receiving"] = receiving_rows
         if shipping_rows:
             st.subheader("Linhas para BASE-EXPEDINDO")
-            st.dataframe(shipping_rows, width="stretch", hide_index=True)
+            shipping_rows = st.data_editor(shipping_rows, num_rows="dynamic", width="stretch", hide_index=True, key=f"shipping_results_editor_{hash(str(summaries))}"); shipping_rows = shipping_rows.to_dict(orient="records") if hasattr(shipping_rows, "to_dict") else shipping_rows; st.session_state["manifest_shipping"] = shipping_rows
         xlsx = build_xlsx(receiving_rows, shipping_rows)
         st.download_button(
             "Baixar planilha pronta (.xlsx)", xlsx,
@@ -387,17 +387,17 @@ if "manifest_summaries" in st.session_state:
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             type="primary",
         )
-        left, right = st.columns(2)
+        left, right = st.columns(2); st.caption("Para copiar, use o ícone no canto superior de cada bloco."); left.code(dataframe_tsv(receiving_rows, RECEIVING_HEADERS).decode("utf-8-sig"), language=None); right.code(dataframe_tsv(shipping_rows, SHIPPING_HEADERS).decode("utf-8-sig"), language=None)
         with left:
             st.download_button(
-                "Copiar/colar RECEBENDO (.tsv)",
+                "Baixar arquivo RECEBENDO (.tsv)",
                 dataframe_tsv(receiving_rows, RECEIVING_HEADERS),
                 file_name="base_recebendo.tsv", mime="text/tab-separated-values",
                 disabled=not receiving_rows,
             )
         with right:
             st.download_button(
-                "Copiar/colar EXPEDINDO (.tsv)",
+                "Baixar arquivo EXPEDINDO (.tsv)",
                 dataframe_tsv(shipping_rows, SHIPPING_HEADERS),
                 file_name="base_expedindo.tsv", mime="text/tab-separated-values",
                 disabled=not shipping_rows,
