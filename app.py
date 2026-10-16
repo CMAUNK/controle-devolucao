@@ -387,7 +387,7 @@ if "manifest_summaries" in st.session_state:
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             type="primary",
         )
-        left, right = st.columns(2); left.caption("Colunas: " + " | ".join(RECEIVING_HEADERS)); right.caption("Colunas: " + " | ".join(SHIPPING_HEADERS)); left.code(dataframe_tsv(receiving_rows, RECEIVING_HEADERS, include_header=False).decode("utf-8-sig"), language=None); right.code(dataframe_tsv(shipping_rows, SHIPPING_HEADERS, include_header=False).decode("utf-8-sig"), language=None)
+        left, right = st.columns(2); left.code(dataframe_tsv(receiving_rows, RECEIVING_HEADERS, include_header=False).decode("utf-8-sig"), language=None); right.code(dataframe_tsv(shipping_rows, SHIPPING_HEADERS, include_header=False).decode("utf-8-sig"), language=None)
         with left:
             st.download_button(
                 "Baixar arquivo RECEBENDO (.tsv)",
