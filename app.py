@@ -1,3 +1,4 @@
+275
 from __future__ import annotations
 
 import csv
@@ -376,10 +377,10 @@ if "manifest_summaries" in st.session_state:
         shipping_rows = st.session_state["manifest_shipping"]
         if receiving_rows is not None:
             st.subheader("Linhas para BASE-RECEBENDO")
-            receiving_rows = st.data_editor(receiving_rows if receiving_rows else {header: [] for header in RECEIVING_HEADERS}, num_rows="dynamic", width="stretch", hide_index=True, key=f"receiving_results_editor_{hash(str(summaries))}"); receiving_rows = receiving_rows.to_dict(orient="records") if hasattr(receiving_rows, "to_dict") else receiving_rows; st.session_state["manifest_receiving"] = receiving_rows
+            receiving_rows = st.data_editor(receiving_rows if receiving_rows else {header: [] for header in RECEIVING_HEADERS}, num_rows="dynamic", width="stretch", hide_index=True, key=f"receiving_results_editor_{hash(str(summaries))}"); receiving_rows = receiving_rows.to_dict(orient="records") if hasattr(receiving_rows, "to_dict") else ([dict(zip(receiving_rows, values)) for values in zip(*receiving_rows.values())] if isinstance(receiving_rows, dict) else receiving_rows); st.session_state["manifest_receiving"] = receiving_rows
         if shipping_rows is not None:
             st.subheader("Linhas para BASE-EXPEDINDO")
-            shipping_rows = st.data_editor(shipping_rows if shipping_rows else {header: [] for header in SHIPPING_HEADERS}, num_rows="dynamic", width="stretch", hide_index=True, key=f"shipping_results_editor_{hash(str(summaries))}"); shipping_rows = shipping_rows.to_dict(orient="records") if hasattr(shipping_rows, "to_dict") else shipping_rows; st.session_state["manifest_shipping"] = shipping_rows
+            shipping_rows = st.data_editor(shipping_rows if shipping_rows else {header: [] for header in SHIPPING_HEADERS}, num_rows="dynamic", width="stretch", hide_index=True, key=f"shipping_results_editor_{hash(str(summaries))}"); shipping_rows = shipping_rows.to_dict(orient="records") if hasattr(shipping_rows, "to_dict") else ([dict(zip(shipping_rows, values)) for values in zip(*shipping_rows.values())] if isinstance(shipping_rows, dict) else shipping_rows); st.session_state["manifest_shipping"] = shipping_rows
         xlsx = build_xlsx(receiving_rows, shipping_rows)
         st.download_button(
             "Baixar planilha pronta (.xlsx)", xlsx,
